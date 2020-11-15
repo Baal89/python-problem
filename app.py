@@ -12,24 +12,26 @@ def program():
     choice = input('human enter a value: ')
 
     global main_program
-    while main_program:
-        if(choice == '1'):
-            sum_of_numbers()
+    if(choice == '1'):
+        # cambiato qua
+        sum_of_numbers(*get_information())
 
-        elif(choice == '2'):
-            product_of_numbers(*get_information())
+    elif(choice == '2'):
+        # aggiunto -1 e print
+        print(product_of_numbers(*get_information())-1)
 
-        elif(choice == '3'):
-            esponent_of_numbers(*get_information())
+    elif(choice == '3'):
+        # aggiunto print
+        print(esponent_of_numbers(*get_information()))
 
-        elif(choice == '4'):
-            modulo_of_numbers(*get_information())
+    elif(choice == '4'):
+        modulo_of_numbers(*get_information())
 
-        elif(choice == 'q'):
-            print('program terminated')
-            main_program = False
-        else:
-            print('wrong value entered')
+    elif(choice == 'q'):
+        print('program terminated')
+        main_program = False
+    else:
+        print('wrong value entered')
 
 
 def get_information():
@@ -37,46 +39,65 @@ def get_information():
         try:
             x = float(input('human enter a value: '))
             y = float(input('human enter second value: '))
-            return x, y
+            # qua ho aggiunto questo pezzo cosi non si possono mettere valori negativi! top.
+            if (x < 0 or y < 0):
+                raise ValueError
+            break
         except ValueError:
             print('my processors cannot understand the inputs')
+    return x, y
 
 
-def sum_of_numbers():
-    x, y = get_information()
+def sum_of_numbers(x, y):
+    # messo solo return
     sum = x + y
-    print(sum)
+    print('Calculation succed the result is: ' + str(sum))
     program()
 
 
+# questa funzione e` cambiata molto
 def product_of_numbers(x, y):
     if(x < y):
-        print(product_of_numbers(y, x))
-        program()
+        return product_of_numbers(y, x)
     if(x == 0):
-        print(0)
-        program()
+        print('first value is equal to 0, result: ', x * y)
+        return 1
     else:
-        print(x + product_of_numbers(x, y-1))
-        program()
+        if(y == 0):
+            print('End of calculation')
+            return 1
+        else:
+            res = x + product_of_numbers(x, y - 1)
+            return res
 
 
+# anche questa
 def esponent_of_numbers(x, y):
-    if y == 0:
-        print(1)
-        program()
-    elif y % 2 == 0:
-        print(esponent_of_numbers(x, y / 2)**2)
-        program()
+    if(y == 0):
+        print('End of calculation')
+        return 1
+    elif(y % 2 == 0):
+        res = esponent_of_numbers(x, y / 2)**2
+        return res
     else:
-        print(x * esponent_of_numbers(x, y-1))
-        program()
+        res = x * esponent_of_numbers(x, y - 1)
+        return res
 
 
+# sopratutto questa
 def modulo_of_numbers(x, y):
-    if x < y:
-        print(x)
-    print(modulo_of_numbers(x - y, y))
+    if(x < y):
+        print('End of calculation')
+        print('The result is: ', x)
+        return 1
+    if(y < x):
+        res = modulo_of_numbers(x - y, y)
+        return res
+
+
+# questo pezzettino qua serve a non chiamare main program tutte le volte
+# nelle altre funzioni
+while main_program:
     program()
 
 
